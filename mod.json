@@ -1,0 +1,23 @@
+{
+ "id": "loopback", "version": "0.1",
+ "license": "GPL-2.0-or-later",
+ "title": "MIDI LOOPBACK", "category": "MIDI", "author": "irpina",
+ "description": "An internal MIDI cable for the Digitone mk1 and Digitone Keys: what the MIDI tracks send on the chosen channel goes back into the unit instead of out, as if it came in on DIN, so a MIDI track can sequence and p-lock the Digitone's own tracks and its master effects (set its channel to a track's or the FX channel and its CCs to the parameters' CC numbers). LOOPBACK in the Mod Menu (hold a track key) picks the channel, OFF or 1-16, saved with the project. Applied from the UI task, up to a frame (33 ms) after the step. OS 1.43 and 1.44 (it names no firmware address: its 1.44 port is empty). Needs core-dn1 5.0.1.",
+ "device": "digitone-mk1", "os": "1.43",
+ "ports": {"1.44": {}},
+ "sources": ["loopback.c"],
+ "cflags": ["-Os", "-fno-tree-loop-distribute-patterns"],
+ "subscribe": [
+  {"event": "ev_seq_midi", "fn": "loop_seq", "order": 50},
+  {"event": "ev_tick", "fn": "loop_tick", "order": 20},
+  {"event": "ev_draw", "fn": "loop_draw", "order": 50}
+ ],
+ "contribute": [
+  {"to": "core_menu", "order": 50, "data": "00000000",
+   "relocs": [[0, "abs32", "sym:loop_menu", 0]]},
+  {"to": "core_projdata", "order": 50, "data": "00000000",
+   "relocs": [[0, "abs32", "sym:loop_projdata", 0]]}
+ ],
+ "resources": {"core": "5.0.1", "names": ["projdata:LOOP"]},
+ "requires": ["core"]
+}
